@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import type { AudioEngine } from '../../application/ports/audio-engine'
 import type { SessionRepository } from '../../application/ports/session-repository'
@@ -8,7 +8,6 @@ import { createWordAccent } from '../../domain/music/composition'
 import { mapLetterToMidi, NOTE_MAPPING_VERSION } from '../../domain/music/note-mapper'
 import type { PracticeMode, VocabularyItem } from '../../domain/vocabulary/types'
 import { VOCABULARY } from '../../data/vocabulary'
-import { isWebAudioSupported, WebAudioEngine } from '../../infrastructure/audio/web-audio-engine'
 
 const SESSION_SIZE = 5
 
@@ -17,6 +16,8 @@ type FeedbackState = 'correct' | 'incorrect' | 'revealed' | 'skipped' | null
 
 interface PracticeScreenProps {
   repository: SessionRepository
+  audio: AudioEngine
+  audioAvailable: boolean
 }
 
 function createId(): string {
@@ -27,8 +28,7 @@ function createId(): string {
   return 'wo-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9)
 }
 
-export function PracticeScreen({ repository }: PracticeScreenProps) {
-  const audio = useMemo<AudioEngine>(() => new WebAudioEngine(), [])
+export function PracticeScreen({ repository, audio, audioAvailable }: PracticeScreenProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const sessionStartedAtRef = useRef(0)
   const itemStartedAtRef = useRef(0)
@@ -49,15 +49,10 @@ export function PracticeScreen({ repository }: PracticeScreenProps) {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'failed'>('idle')
 
   const currentItem = items[currentIndex]
-  const audioAvailable = isWebAudioSupported()
 
   useEffect(() => {
     audio.setMuted(!soundEnabled)
   }, [audio, soundEnabled])
-
-  useEffect(() => {
-    return () => audio.dispose()
-  }, [audio])
 
   useEffect(() => {
     if (screen === 'active' && feedback === null) {

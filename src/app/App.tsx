@@ -1,15 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PracticeScreen } from '../features/practice/PracticeScreen'
 import { ProgressScreen } from '../features/progress/ProgressScreen'
 import { IndexedDbSessionRepository } from '../infrastructure/persistence/indexeddb-session-repository'
+import { isWebAudioSupported, WebAudioEngine } from '../infrastructure/audio/web-audio-engine'
 import './styles.css'
 
 const sessionRepository = new IndexedDbSessionRepository()
+const audioEngine = new WebAudioEngine()
+const audioAvailable = isWebAudioSupported()
 
 type AppView = 'practice' | 'progress'
 
 export function App() {
   const [view, setView] = useState<AppView>('practice')
+
+  useEffect(() => {
+    return () => audioEngine.dispose()
+  }, [])
 
   return (
     <div className="app-shell">
@@ -46,7 +53,7 @@ export function App() {
 
       <main>
         <div hidden={view !== 'practice'}>
-          <PracticeScreen repository={sessionRepository} />
+          <PracticeScreen repository={sessionRepository} audio={audioEngine} audioAvailable={audioAvailable} />
         </div>
         {view === 'progress' && <ProgressScreen repository={sessionRepository} />}
       </main>
