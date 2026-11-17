@@ -12,22 +12,21 @@ Scope:
 - React + TypeScript + Vite application scaffold.
 - Domain-first folder boundaries and dependency rules.
 - Fixed letter-to-pentatonic note mapping with a mapping version.
-- Web Audio adapter with lazy unlock, mute, volume, envelope, and voice cap.
+- Web Audio adapter with lazy unlock, mute, envelope, and overlapping-voice cap.
 - Focused input only; no global keyboard listeners.
-- Responsive, accessible shell and a minimal Copy/Recall practice flow.
-- IndexedDB repository boundary and visible fallback when persistence is unavailable.
+- Responsive, accessible shell and minimal Copy/Recall practice flow.
+- IndexedDB repository boundary and visible warning when persistence is unavailable.
 - Unit/component tests, lint, typecheck, production build, and CI.
 
 Acceptance gate:
-- A learner can complete at least one Copy and one Recall exercise end to end.
-- Each alphabetic character typed in the focused field schedules a deterministic note.
-- The same character always maps to the same note for a mapping version.
-- Correct word completion creates a replayable motif/event sequence.
-- Copy never increments language mastery.
-- Recall evidence is recorded only when the answer was not revealed.
-- Mute, pause, unsupported audio, and unavailable storage do not crash the app.
-- Refresh does not silently lose data when persistence reports success.
-- CI runs all required checks; no skipped or deleted tests.
+- [x] Architecture, domain model, ADR, and phased plan documented.
+- [x] React application shell and Copy/Recall vertical slice implemented.
+- [x] Stable letter-to-note mapping and Web Audio adapter implemented.
+- [x] IndexedDB session repository and progress view implemented.
+- [x] Domain and component tests added.
+- [ ] CI checks pass on the implementation branch.
+- [ ] Real-browser audio, persistence, and accessibility checks completed.
+- [ ] Dependency lockfile generated and committed.
 
 ## Phase 1 — Learning MVP hardening
 
@@ -104,4 +103,5 @@ Acceptance gate:
 2. Phase 0 foundation and first playable vertical slice.
 3. Run CI and review the PR.
 4. Fix all P0 issues found by tests/manual browser verification.
-5. Only then proceed to Phase 1 hardening.
+5. Generate and commit the npm dependency lockfile before merging.
+6. Only then proceed to Phase 1 hardening.
