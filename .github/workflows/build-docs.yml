@@ -1,0 +1,67 @@
+name: Build Word and PDF documents
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/*-Product-Design.md"
+      - ".github/workflows/build-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-product-documents
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install document toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese fonts-noto-cjk
+
+      - name: Build Word and PDF
+        env:
+          FONT: Noto Sans CJK SC
+        run: |
+          mkdir -p docs
+          pandoc docs/Word-Orchestra-Product-Design.md \
+            --from markdown --standalone --toc \
+            --metadata lang=zh-CN \
+            --metadata title="Word Orchestra — Product Design" \
+            --variable=geometry:margin=20mm \
+            --variable=mainfont="$FONT" \
+            --variable=CJKmainfont="$FONT" \
+            --variable=fontsize=10pt \
+            --output=docs/Word-Orchestra-Product-Design.docx
+
+          pandoc docs/Word-Orchestra-Product-Design.md \
+            --from markdown --standalone --toc \
+            --metadata lang=zh-CN \
+            --metadata title="Word Orchestra — Product Design" \
+            --variable=geometry:margin=20mm \
+            --variable=mainfont="$FONT" \
+            --variable=CJKmainfont="$FONT" \
+            --variable=fontsize=10pt \
+            --pdf-engine=xelatex \
+            --output=docs/Word-Orchestra-Product-Design.pdf
+
+      - name: Commit generated documents
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/Word-Orchestra-Product-Design.docx docs/Word-Orchestra-Product-Design.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: generate Word and PDF product specifications"
+            git push
+          else
+            echo "Generated documents are already up to date."
+          fi
