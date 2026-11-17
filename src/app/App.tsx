@@ -45,9 +45,10 @@ export function App() {
       </header>
 
       <main>
-        {view === 'practice'
-          ? <PracticeScreen repository={sessionRepository} />
-          : <ProgressScreen repository={sessionRepository} />}
+        <div hidden={view !== 'practice'}>
+          <PracticeScreen repository={sessionRepository} />
+        </div>
+        {view === 'progress' && <ProgressScreen repository={sessionRepository} />}
       </main>
 
       <footer className="site-footer">
