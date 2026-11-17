@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install document toolchain
         run: |
@@ -61,6 +63,7 @@ jobs:
           git add docs/Word-Orchestra-Product-Design.docx docs/Word-Orchestra-Product-Design.pdf
           if ! git diff --cached --quiet; then
             git commit -m "docs: generate Word and PDF product specifications"
+            git pull --rebase origin main
             git push
           else
             echo "Generated documents are already up to date."
