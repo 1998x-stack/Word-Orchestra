@@ -18,8 +18,11 @@ It is **not** merely a free-typing piano or a rhythm/reaction game. Free-form ke
 
 - [Product design — Word](docs/Word-Orchestra-Product-Design.docx)
 - [Product design — PDF](docs/Word-Orchestra-Product-Design.pdf)
+- [Editable Markdown source](docs/Word-Orchestra-Product-Design.md)
 
 The specification covers market evidence, learning-science constraints, game loop, music engine, scoring and feedback, adaptive learning, data model, privacy, MVP acceptance criteria, experiments, and phased roadmap.
+
+The Word and PDF files are generated from the Markdown source by [GitHub Actions](.github/workflows/build-docs.yml).
 
 ## Status
 
