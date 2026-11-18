@@ -17,7 +17,7 @@ Word Orchestra combines English vocabulary practice, keyboard input, and generat
 
 ## Current implementation
 
-Phase 0 implementation and a stacked Phase 1 learning/data slice are being verified in separate pull requests.
+The local-first practice MVP and the Phase 1 session/data core are implemented. Production-level vocabulary validation and real-device accessibility/audio QA remain separate release gates.
 
 Implemented:
 - React + TypeScript + Vite application shell.
@@ -48,10 +48,13 @@ npm run lint
 npm run typecheck
 npm run test -- --run
 npm run build
+npx playwright install chromium firefox webkit
 npm run test:e2e
 ```
 
 No backend, account, LLM provider, or remote keyboard telemetry is required.
+
+**Release limitations:** the starter pack contains 12 editorial-draft entries; independent meaning recall, delayed spaced review and native Safari/mobile audio measurements are still pending. Track [real-device acceptance](https://github.com/1998x-stack/Word-Orchestra/issues/3) and [content/learning quality](https://github.com/1998x-stack/Word-Orchestra/issues/4).
 
 ## Documentation
 

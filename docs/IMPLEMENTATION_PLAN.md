@@ -27,7 +27,7 @@ Acceptance gate:
 - [ ] CI checks pass on the implementation branch.
 - [ ] Real-browser audio, persistence, and accessibility checks completed.
 - [x] Dependency lockfile generated and committed; CI uses npm ci.
-- [ ] Browser E2E across Chromium, Firefox, and WebKit passes on the branch.
+- [x] Browser E2E across Chromium, Firefox, and WebKit passes on the branch (PR #1).
 
 ## Phase 1 — Learning MVP hardening
 
@@ -42,7 +42,7 @@ Implementation checklist:
 - [x] IndexedDB v1 → v2 migration code and regression test.
 - [x] Spelling comparison metrics (not physical keystroke accuracy).
 - [x] Starter vocabulary provenance explicitly marked as draft.
-- [ ] GitHub CI and cross-browser E2E pass for Phase 1 branch.
+- [x] GitHub CI and 15/15 cross-browser E2E pass for the Phase 1 core (run 44236986004).
 - [ ] Production-quality reviewed A1–B1 word pack and editorial attribution.
 - [ ] Manual Safari audio, mobile accessibility, and keyboard-only testing.
 - [ ] Independent meaning recall and delayed retrieval evidence.

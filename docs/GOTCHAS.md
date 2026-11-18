@@ -112,3 +112,11 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Fix:** Assert that the Copy metric card shows the persisted expected value 5 after reload, instead of pinning the test to obsolete wording.
 - **Evidence:** Run 44236633638: 9 browser tests passed, only 3 copies of this assertion failed.
 - **Validation:** Rerun pending.
+
+## Phase 1 final automated verification (2026-11-18)
+
+- PR #2 commit 06222d2: GitHub Actions run 44236986004 completed successfully.
+- Reproducible npm ci, ESLint, TypeScript, Vitest, production Vite build, and 15/15 Playwright E2E tests across Chromium/Firefox/WebKit passed.
+- The final browser test suite includes denied IndexedDB storage and never falsely reports saved progress.
+- **NOT RUN:** native macOS Safari, physical mobile IME/audio latency measurements, screen-reader manual acceptance; see Issue #3.
+- **NOT COMPLETE:** editorially verified A1–B1 vocabulary expansion and separate meaning recall evidence; see Issue #4.
