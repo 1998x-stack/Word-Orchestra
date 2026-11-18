@@ -74,3 +74,11 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Fix:** Pin the browser CI runner to ubuntu-24.04, an explicitly supported OS for Playwright 1.56.
 - **Regression test:** Full browser E2E must complete on the pinned runner.
 - **Validation:** Initial run FAILED at browser installation; rerun pending.
+
+
+### 2026-11-18 — Firefox in Playwright Docker container requires HOME=/root
+
+- **Reproduction:** GitHub Actions browser job in mcr.microsoft.com/playwright:v1.56.1-noble launched Firefox with HOME=/github/home, but Firefox ran as root and refused to start.
+- **Evidence:** Phase 0 E2E in run 44235990440: Chromium and WebKit passed (6 tests); 3 Firefox tests failed before opening any page. Firefox log explicitly recommends setting HOME=/root.
+- **Fix:** Set HOME=/root only for the browser test command, retaining all three browser projects and all tests.
+- **Validation:** Fix committed; subsequent cross-browser run pending.

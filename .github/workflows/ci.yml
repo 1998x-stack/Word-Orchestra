@@ -48,6 +48,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Chromium, Firefox and WebKit E2E
         run: npm run test:e2e
+        env:
+          HOME: /root
       - name: Upload browser failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
