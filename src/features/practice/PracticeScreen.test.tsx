@@ -8,6 +8,8 @@ function createRepository(): SessionRepository {
   return {
     saveSession: vi.fn().mockResolvedValue(undefined),
     listSessions: vi.fn().mockResolvedValue([]),
+    deleteSession: vi.fn().mockResolvedValue(undefined),
+    importSessions: vi.fn().mockResolvedValue({ added: 0, skipped: 0 }),
   }
 }
 

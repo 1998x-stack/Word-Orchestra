@@ -17,7 +17,7 @@ Word Orchestra combines English vocabulary practice, keyboard input, and generat
 
 ## Current implementation
 
-Phase 0 foundation and the first playable slice are implemented on the engineering branch.
+Phase 0 implementation and a stacked Phase 1 learning/data slice are being verified in separate pull requests.
 
 Implemented:
 - React + TypeScript + Vite application shell.
@@ -27,16 +27,17 @@ Implemented:
 - Session composition event capture and replay.
 - IndexedDB session history and a separate progress view.
 - Domain rules and tests that keep Copy separate from recall evidence.
-- CI checks for lint, typecheck, tests, and production build.
+- CI checks for npm ci, lint, typecheck, tests, production build, and Playwright browser E2E.
+- Phase 1: versioned JSON archive, duplicate-safe import, per-session replay/deletion, IndexedDB v2 migration and first-attempt evidence metrics.
 
-This is an interaction prototype, not yet the full learning product. Listen, Context, FSRS scheduling, content import, export/import, and validated delayed-recall reporting remain later phases.
+This is an interaction prototype, not yet the full learning product. Listen, Context, FSRS scheduling, personal content import, and validated delayed-recall reporting remain later phases. JSON session-history export/import is implemented in Phase 1.
 
 ## Quick start
 
 Requirements: Node.js 20.19+ (Node 22 recommended).
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -47,6 +48,7 @@ npm run lint
 npm run typecheck
 npm run test -- --run
 npm run build
+npm run test:e2e
 ```
 
 No backend, account, LLM provider, or remote keyboard telemetry is required.
@@ -59,6 +61,7 @@ No backend, account, LLM provider, or remote keyboard telemetry is required.
 - [Phased implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Test strategy](docs/TEST_STRATEGY.md)
 - [Engineering gotchas](docs/GOTCHAS.md)
+- [Phase 1 session and evidence design](docs/PHASE1_DESIGN.md)
 - [ADR-0001: Local-first modular web architecture](docs/decisions/ADR-0001-local-first-web-architecture.md)
 
 ## Product design artifacts

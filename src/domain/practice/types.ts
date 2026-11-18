@@ -2,6 +2,13 @@ import type { PracticeMode } from '../vocabulary/types'
 
 export type AttemptOutcome = 'correct' | 'incorrect' | 'revealed' | 'skipped'
 
+/** A whole-answer spelling comparison, not raw keystroke telemetry. */
+export interface SpellingComparison {
+  expectedCharacters: number
+  matchingCharacters: number
+  editDistance: number
+}
+
 export interface PracticeAttemptRecord {
   id: string
   itemId: string
@@ -10,6 +17,7 @@ export interface PracticeAttemptRecord {
   answerWasVisible: boolean
   submittedAt: number
   elapsedMs: number
+  spelling?: SpellingComparison
 }
 
 export interface NoteEvent {

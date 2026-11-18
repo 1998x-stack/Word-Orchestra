@@ -26,11 +26,27 @@ Acceptance gate:
 - [x] Domain and component tests added.
 - [ ] CI checks pass on the implementation branch.
 - [ ] Real-browser audio, persistence, and accessibility checks completed.
-- [ ] Dependency lockfile generated and committed.
+- [x] Dependency lockfile generated and committed; CI uses npm ci.
+- [ ] Browser E2E across Chromium, Firefox, and WebKit passes on the branch.
 
 ## Phase 1 — Learning MVP hardening
 
 **Goal:** turn the prototype into a useful daily learning product.
+
+Design: [Phase 1 Learning Evidence, Session Studio and Local Data Reliability](PHASE1_DESIGN.md).
+
+Implementation checklist:
+- [x] First-unaided-attempt recall summary; Copy excluded.
+- [x] Session composition library with replay and deliberate deletion.
+- [x] Versioned JSON export/import, strict schema validation and duplicate-skip semantics.
+- [x] IndexedDB v1 → v2 migration code and regression test.
+- [x] Spelling comparison metrics (not physical keystroke accuracy).
+- [x] Starter vocabulary provenance explicitly marked as draft.
+- [ ] GitHub CI and cross-browser E2E pass for Phase 1 branch.
+- [ ] Production-quality reviewed A1–B1 word pack and editorial attribution.
+- [ ] Manual Safari audio, mobile accessibility, and keyboard-only testing.
+- [ ] Independent meaning recall and delayed retrieval evidence.
+
 
 Scope:
 - Curated A1–B1 vocabulary pack with source/license/review metadata.

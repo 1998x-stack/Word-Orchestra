@@ -74,3 +74,11 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Fix:** Pin the browser CI runner to ubuntu-24.04, an explicitly supported OS for Playwright 1.56.
 - **Regression test:** Full browser E2E must complete on the pinned runner.
 - **Validation:** Initial run FAILED at browser installation; rerun pending.
+
+### 2026-11-18 — Phase 1 migration and archive constraints
+
+- **Symptom to prevent:** sessions disappear after database upgrades, imported sessions silently overwrite existing records, or previously unrecorded raw answers enter storage.
+- **Design:** IndexedDB version 2 adds the by-mode index without dropping sessions. JSON archives enforce a strict versioned schema, reject unknown properties and skip duplicate IDs.
+- **Regression tests:** v1→v2 upgrade, duplicate-safe import, destructive delete, supported archive round-trip, invalid version/rawInput/out-of-range note rejection.
+- **Validation:** NOT RUN on Phase 1 branch until GitHub CI completes; do not claim deployment success from code inspection alone.
+- **Known limitation:** spelling edit distance is not a physical keystroke error metric, and starter vocabulary remains draft content.

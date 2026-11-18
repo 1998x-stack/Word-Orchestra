@@ -4,6 +4,7 @@ import type { AudioEngine } from '../../application/ports/audio-engine'
 import type { SessionRepository } from '../../application/ports/session-repository'
 import type { AttemptOutcome, NoteEvent, PracticeAttemptRecord, StoredSession } from '../../domain/practice/types'
 import { isAnswerCorrect } from '../../domain/practice/answer'
+import { compareSpelling, firstUnaidedRecallAttempts } from '../../domain/practice/metrics'
 import { createWordAccent } from '../../domain/music/composition'
 import { mapLetterToMidi, NOTE_MAPPING_VERSION } from '../../domain/music/note-mapper'
 import type { PracticeMode, VocabularyItem } from '../../domain/vocabulary/types'
@@ -74,6 +75,9 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
       answerWasVisible: visible,
       submittedAt: now,
       elapsedMs: Math.max(0, now - itemStartedAtRef.current),
+      ...(outcome === 'correct' || outcome === 'incorrect'
+        ? { spelling: compareSpelling(currentItem.lemma, draft) }
+        : {}),
     }
     const updated = attemptsRef.current.concat(attempt)
 
@@ -108,7 +112,7 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
     }
 
     const correct = isAnswerCorrect(draft, currentItem.acceptedAnswers)
-    appendAttempt(correct ? 'correct' : 'incorrect', answerWasVisible)
+    appendAttempt(correct ? 'correct' : 'incorrect', mode === 'copy' || answerWasVisible)
 
     if (correct) {
       const accentStart = Math.max(0, lastNoteStartRef.current + 120)
@@ -276,7 +280,7 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
               <p className="eyebrow">CHOOSE YOUR PRACTICE</p>
               <h2>今天想怎样练习？</h2>
             </div>
-            <span className="word-count">{VOCABULARY.length} 个精选词条</span>
+            <span className="word-count">{VOCABULARY.length} 个演示词条</span>
           </div>
 
           <div className="mode-options">
@@ -324,10 +328,7 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
   }
 
   if (screen === 'complete' && completedSession) {
-    const recallAttempts = completedSession.attempts.filter(
-      (attempt) => attempt.mode === 'recall' && !attempt.answerWasVisible &&
-        (attempt.outcome === 'correct' || attempt.outcome === 'incorrect'),
-    )
+    const recallAttempts = firstUnaidedRecallAttempts(completedSession.attempts)
     const recallCorrect = recallAttempts.filter((attempt) => attempt.outcome === 'correct').length
     const completedWords = new Set(
       completedSession.attempts
@@ -353,7 +354,7 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
           </div>
           <div className="result-stat">
             <strong>{recallAttempts.length > 0 ? Math.round((recallCorrect / recallAttempts.length) * 100) + '%' : '—'}</strong>
-            <span>无提示回忆正确率</span>
+            <span>首次无提示回忆正确率</span>
           </div>
         </div>
 
