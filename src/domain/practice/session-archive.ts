@@ -112,12 +112,16 @@ function session(value: unknown, path: string): StoredSession {
 }
 
 export function serializeSessionArchive(sessions: readonly StoredSession[], exportedAt: number): string {
-  return JSON.stringify({
+  if (sessions.length > 500) invalid('archive.sessions')
+  const content = JSON.stringify({
     format: ARCHIVE_FORMAT,
     schemaVersion: ARCHIVE_VERSION,
     exportedAt,
     sessions,
   }, null, 2)
+  // Verify our own exports will be accepted on reimport, including unknown-field rejection.
+  parseSessionArchive(content)
+  return content
 }
 
 export function parseSessionArchive(text: string): StoredSession[] {

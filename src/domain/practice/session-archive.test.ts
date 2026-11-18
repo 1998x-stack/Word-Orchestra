@@ -21,6 +21,11 @@ describe('session archive', () => {
     expect(parseSessionArchive(serializeSessionArchive([example], 1000))).toEqual([example])
   })
 
+  it('rejects archives that cannot be safely reimported', () => {
+    const extra = { ...example, rawInput: 'never persist the answer here' }
+    expect(() => serializeSessionArchive([extra], 1000)).toThrow()
+  })
+
   it('rejects invalid version, unexpected fields, or injected raw answer text', () => {
     const encoded = serializeSessionArchive([example], 1000)
     expect(() => parseSessionArchive(encoded.replace('"schemaVersion": 1', '"schemaVersion": 99'))).toThrow()

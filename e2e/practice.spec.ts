@@ -85,6 +85,11 @@ test('JSON archive import, duplicate skipping, and deliberate deletion work in a
   await expect(page.getByText(/导入完成：新增 1 次练习，跳过 0 次重复记录/)).toBeVisible()
   await expect(page.getByRole('button', { name: '删除 imported-demo-session' })).toBeVisible()
 
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: '导出全部 JSON' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/^word-orchestra-sessions-.*\.json$/)
+
   await input.setInputFiles({ name: 'archive.json', mimeType: 'application/json', buffer: Buffer.from(content) })
   await expect(page.getByText(/新增 0 次练习，跳过 1 次重复记录/)).toBeVisible()
 
