@@ -104,3 +104,11 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Root cause:** Phase 1 Studio renamed that heading to "练习与作品库"; an existing Playwright assertion was not updated.
 - **Fix:** Assert the current heading. Retain persistence and session-content assertions.
 - **Validation:** Run 44236249712 browser job FAILED on outdated selector; updated E2E pending on merged-main Phase 1 branch.
+
+### 2026-11-18 — Phase 1 Copy metric assertion required semantic update
+
+- **Symptom:** Copy session was saved and appeared after browser reload, but the E2E searched for the removed subtitle "次 Copy 模式尝试".
+- **Root cause:** Studio replaced the subtitle with "次独立提交" and moved the mode description into a metric card.
+- **Fix:** Assert that the Copy metric card shows the persisted expected value 5 after reload, instead of pinning the test to obsolete wording.
+- **Evidence:** Run 44236633638: 9 browser tests passed, only 3 copies of this assertion failed.
+- **Validation:** Rerun pending.

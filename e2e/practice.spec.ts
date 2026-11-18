@@ -27,7 +27,7 @@ test('Copy session finishes, saves, and persists across a full browser reload', 
   await page.reload()
   await page.getByRole('button', { name: '学习记录' }).click()
   await expect(page.getByText('拼写练习', { exact: true })).toBeVisible()
-  await expect(page.getByText('次 Copy 模式尝试')).toBeVisible()
+  await expect(page.getByText('Copy 拼写练习').locator('..').locator('strong')).toHaveText('5')
 })
 
 test('revealed Recall answers are not reported as successful mastery', async ({ page }) => {
