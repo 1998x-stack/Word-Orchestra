@@ -64,3 +64,13 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Fix:**
 - **Regression test:**
 - **Validation:** PASS / FAIL / NOT RUN
+
+
+### 2026-11-18 — Playwright 1.56.1 unsupported on ubuntu-26.04 runner
+
+- **Symptom:** All 17 Vitest tests, lint, typecheck, and production build passed, but Playwright browser install failed before E2E execution.
+- **Root cause:** GitHub's ubuntu-latest resolved to Ubuntu 26.04, while this pinned Playwright version does not support that OS.
+- **Reproduction:** Run `npx playwright install --with-deps chromium firefox webkit` on ubuntu-26.04-x64; error reports unsupported platform.
+- **Fix:** Pin the browser CI runner to ubuntu-24.04, an explicitly supported OS for Playwright 1.56.
+- **Regression test:** Full browser E2E must complete on the pinned runner.
+- **Validation:** Initial run FAILED at browser installation; rerun pending.
