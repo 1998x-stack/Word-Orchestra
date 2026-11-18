@@ -99,3 +99,22 @@ test('JSON archive import, duplicate skipping, and deliberate deletion work in a
   await expect(page.getByText('练习及关联作品已从本地记录删除。')).toBeVisible()
   await expect(page.getByRole('button', { name: '删除 imported-demo-session' })).toHaveCount(0)
 })
+
+
+test('denied browser storage shows an explicit unsaved warning', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'indexedDB', { configurable: true, value: undefined })
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: /开始练习/ }).click()
+
+  for (let index = 0; index < FIRST_FIVE_WORDS.length; index += 1) {
+    await page.getByRole('button', { name: '跳过这个词' }).click()
+    await page.getByRole('button', {
+      name: index === FIRST_FIVE_WORDS.length - 1 ? /完成本次练习/ : /下一个单词/,
+    }).click()
+  }
+
+  await expect(page.getByText(/暂时无法保存到此设备/)).toBeVisible()
+  await expect(page.getByText(/本次学习记录已保存在此设备/)).toHaveCount(0)
+})
