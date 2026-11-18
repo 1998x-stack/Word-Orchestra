@@ -97,3 +97,10 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Fix:** Record notes from accepted input changes, use inputType/data when available, ignore composing/clipboard/drop insertion, and retain Enter handling on the focused input.
 - **Regression tests:** Component unit test checks accepted mutation triggers note capture and typing outside the field does not; browser E2E requires replay to be available after word input.
 - **Validation:** NOT RUN on real mobile hardware; cross-browser CI pending.
+
+### 2026-11-18 — Phase 1 renamed Journal heading without updating browser test
+
+- **Symptom:** Three browser projects reached the saved Journal screen, then failed waiting for the old text "最近的练习".
+- **Root cause:** Phase 1 Studio renamed that heading to "练习与作品库"; an existing Playwright assertion was not updated.
+- **Fix:** Assert the current heading. Retain persistence and session-content assertions.
+- **Validation:** Run 44236249712 browser job FAILED on outdated selector; updated E2E pending on merged-main Phase 1 branch.
