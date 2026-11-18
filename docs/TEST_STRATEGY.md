@@ -49,7 +49,7 @@ A package-lock file must be generated and committed before merge; after that, CI
 - [ ] Firefox: input, audio unlock, mute, and persistence.
 - [ ] Safari: audio unlock after gesture, no stuck AudioContext.
 - [ ] Browser refresh: completed progress survives.
-- [ ] Storage denied/private mode: visible warning; current exercise remains usable and is never reported as saved.
+- [ ] Storage denied/private mode: visible warning; current exercise remains usable and is never reported as saved. (Automated denied-storage E2E added; manual private-mode still pending.)
 - [ ] Keyboard-only navigation and visible focus.
 - [ ] Reduced-motion preference.
 - [ ] Mobile viewport: controls remain usable; no horizontal overflow.

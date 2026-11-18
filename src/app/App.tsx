@@ -55,7 +55,7 @@ export function App() {
         <div hidden={view !== 'practice'}>
           <PracticeScreen repository={sessionRepository} audio={audioEngine} audioAvailable={audioAvailable} />
         </div>
-        {view === 'progress' && <ProgressScreen repository={sessionRepository} />}
+        {view === 'progress' && <ProgressScreen repository={sessionRepository} audio={audioEngine} audioAvailable={audioAvailable} />}
       </main>
 
       <footer className="site-footer">

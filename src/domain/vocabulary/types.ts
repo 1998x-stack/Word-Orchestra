@@ -12,4 +12,11 @@ export interface VocabularyItem {
   definitionEn: string
   exampleEn: string
   exampleZh: string
+  provenance: {
+    source: string
+    license: string
+    reviewStatus: VocabularyReviewStatus
+  }
 }
+
+export type VocabularyReviewStatus = 'draft' | 'reviewed'

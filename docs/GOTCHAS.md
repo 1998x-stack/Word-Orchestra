@@ -75,6 +75,14 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Regression test:** Full browser E2E must complete on the pinned runner.
 - **Validation:** Initial run FAILED at browser installation; rerun pending.
 
+### 2026-11-18 — Phase 1 migration and archive constraints
+
+- **Symptom to prevent:** sessions disappear after database upgrades, imported sessions silently overwrite existing records, or previously unrecorded raw answers enter storage.
+- **Design:** IndexedDB version 2 adds the by-mode index without dropping sessions. JSON archives enforce a strict versioned schema, reject unknown properties and skip duplicate IDs.
+- **Regression tests:** v1→v2 upgrade, duplicate-safe import, destructive delete, supported archive round-trip, invalid version/rawInput/out-of-range note rejection.
+- **Validation:** NOT RUN on Phase 1 branch until GitHub CI completes; do not claim deployment success from code inspection alone.
+- **Known limitation:** spelling edit distance is not a physical keystroke error metric, and starter vocabulary remains draft content.
+
 
 ### 2026-11-18 — Firefox in Playwright Docker container requires HOME=/root
 
@@ -82,3 +90,33 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Evidence:** Phase 0 E2E in run 44235990440: Chromium and WebKit passed (6 tests); 3 Firefox tests failed before opening any page. Firefox log explicitly recommends setting HOME=/root.
 - **Fix:** Set HOME=/root only for the browser test command, retaining all three browser projects and all tests.
 - **Validation:** Fix committed; subsequent cross-browser run pending.
+
+### 2026-11-18 — Hardware keydown alone misses mobile input
+
+- **Problem:** A mobile software keyboard can update an input field without a printable keyboard keydown. A listener that only records keydown notes may silently generate an empty composition on mobile.
+- **Fix:** Record notes from accepted input changes, use inputType/data when available, ignore composing/clipboard/drop insertion, and retain Enter handling on the focused input.
+- **Regression tests:** Component unit test checks accepted mutation triggers note capture and typing outside the field does not; browser E2E requires replay to be available after word input.
+- **Validation:** NOT RUN on real mobile hardware; cross-browser CI pending.
+
+### 2026-11-18 — Phase 1 renamed Journal heading without updating browser test
+
+- **Symptom:** Three browser projects reached the saved Journal screen, then failed waiting for the old text "最近的练习".
+- **Root cause:** Phase 1 Studio renamed that heading to "练习与作品库"; an existing Playwright assertion was not updated.
+- **Fix:** Assert the current heading. Retain persistence and session-content assertions.
+- **Validation:** Run 44236249712 browser job FAILED on outdated selector; updated E2E pending on merged-main Phase 1 branch.
+
+### 2026-11-18 — Phase 1 Copy metric assertion required semantic update
+
+- **Symptom:** Copy session was saved and appeared after browser reload, but the E2E searched for the removed subtitle "次 Copy 模式尝试".
+- **Root cause:** Studio replaced the subtitle with "次独立提交" and moved the mode description into a metric card.
+- **Fix:** Assert that the Copy metric card shows the persisted expected value 5 after reload, instead of pinning the test to obsolete wording.
+- **Evidence:** Run 44236633638: 9 browser tests passed, only 3 copies of this assertion failed.
+- **Validation:** Rerun pending.
+
+## Phase 1 final automated verification (2026-11-18)
+
+- PR #2 commit 06222d2: GitHub Actions run 44236986004 completed successfully.
+- Reproducible npm ci, ESLint, TypeScript, Vitest, production Vite build, and 15/15 Playwright E2E tests across Chromium/Firefox/WebKit passed.
+- The final browser test suite includes denied IndexedDB storage and never falsely reports saved progress.
+- **NOT RUN:** native macOS Safari, physical mobile IME/audio latency measurements, screen-reader manual acceptance; see Issue #3.
+- **NOT COMPLETE:** editorially verified A1–B1 vocabulary expansion and separate meaning recall evidence; see Issue #4.

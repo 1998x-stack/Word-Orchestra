@@ -4,7 +4,7 @@ import type { VocabularyItem } from '../domain/vocabulary/types'
  * Small reviewed starter set for the interaction prototype.
  * This is not a complete or frequency-ranked dictionary.
  */
-export const VOCABULARY: VocabularyItem[] = [
+const SEED_ITEMS: Omit<VocabularyItem, 'provenance'>[] = [
   {
     id: 'a1-apple-noun-fruit',
     lemma: 'apple',
@@ -150,3 +150,13 @@ export const VOCABULARY: VocabularyItem[] = [
     exampleZh: '这首歌有一种轻柔的节奏。',
   },
 ]
+
+/** Seed content is project-authored and pending independent editorial review. */
+export const VOCABULARY: VocabularyItem[] = SEED_ITEMS.map((item) => ({
+  ...item,
+  provenance: {
+    source: 'project-authored-prototype',
+    license: 'all-rights-reserved',
+    reviewStatus: 'draft',
+  },
+}))

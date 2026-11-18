@@ -8,6 +8,8 @@ function createRepository(): SessionRepository {
   return {
     saveSession: vi.fn().mockResolvedValue(undefined),
     listSessions: vi.fn().mockResolvedValue([]),
+    deleteSession: vi.fn().mockResolvedValue(undefined),
+    importSessions: vi.fn().mockResolvedValue({ added: 0, skipped: 0 }),
   }
 }
 
@@ -42,4 +44,14 @@ describe('PracticeScreen', () => {
     expect(screen.getByText('apple')).toBeInTheDocument()
     expect(screen.getByText('拼写练习 · SESSION 01')).toBeInTheDocument()
   })
+  it('records note events only for accepted exercise input, including software-keyboard style input', () => {
+    const mockedAudio = createAudioEngine()
+    render(<PracticeScreen repository={createRepository()} audio={mockedAudio} audioAvailable={true} />)
+    fireEvent.click(screen.getByRole('button', { name: '开始练习' }))
+    fireEvent.change(screen.getByRole('textbox', { name: '输入英文单词' }), { target: { value: 'ap' } })
+    expect(mockedAudio.playCharacter).toHaveBeenCalledTimes(2)
+    fireEvent.keyDown(document.body, { key: 'x' })
+    expect(mockedAudio.playCharacter).toHaveBeenCalledTimes(2)
+  })
+
 })

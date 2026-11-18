@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { IndexedDbSessionRepository } from './indexeddb-session-repository'
+import { openDB } from 'idb'
+import { DATABASE_VERSION, IndexedDbSessionRepository } from './indexeddb-session-repository'
 import type { StoredSession } from '../../domain/practice/types'
 
 const databaseName = 'word-orchestra-repository-test'
@@ -40,7 +41,44 @@ describe('IndexedDbSessionRepository', () => {
     await repository.saveSession(makeSession('newer', 200))
 
     const sessions = await repository.listSessions()
-
     expect(sessions.map((session) => session.id)).toEqual(['newer', 'older'])
+  })
+
+  it('imports missing sessions without replacing an existing record', async () => {
+    await repository.saveSession(makeSession('original', 100))
+    const result = await repository.importSessions([
+      makeSession('original', 999),
+      makeSession('new', 200),
+    ])
+
+    expect(result).toEqual({ added: 1, skipped: 1 })
+    const saved = await repository.listSessions()
+    expect(saved).toHaveLength(2)
+    expect(saved.find((session) => session.id === 'original')?.completedAt).toBe(100)
+  })
+
+  it('deletes one chosen session without deleting other sessions', async () => {
+    await repository.saveSession(makeSession('keep', 100))
+    await repository.saveSession(makeSession('remove', 200))
+    await repository.deleteSession('remove')
+
+    expect((await repository.listSessions()).map((session) => session.id)).toEqual(['keep'])
+  })
+
+  it('upgrades a v1 browser database without losing its sessions', async () => {
+    const legacy = await openDB(databaseName, 1, {
+      upgrade(db) {
+        const store = db.createObjectStore('sessions', { keyPath: 'id' })
+        store.createIndex('by-completed-at', 'completedAt')
+      },
+    })
+    await legacy.put('sessions', makeSession('legacy', 123))
+    legacy.close()
+
+    expect((await repository.listSessions()).map((session) => session.id)).toEqual(['legacy'])
+    const upgraded = await openDB(databaseName, DATABASE_VERSION)
+    expect(upgraded.objectStoreNames.contains('sessions')).toBe(true)
+    expect(upgraded.transaction('sessions').store.indexNames.contains('by-mode')).toBe(true)
+    upgraded.close()
   })
 })
