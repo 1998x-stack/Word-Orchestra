@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { KeyboardEvent } from 'react'
+import type { ChangeEvent, KeyboardEvent } from 'react'
 import type { AudioEngine } from '../../application/ports/audio-engine'
 import type { SessionRepository } from '../../application/ports/session-repository'
 import type { AttemptOutcome, NoteEvent, PracticeAttemptRecord, StoredSession } from '../../domain/practice/types'
@@ -197,44 +197,17 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
     itemStartedAtRef.current = Date.now()
   }
 
-  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-
-      if (feedback === null) {
-        handleSubmit()
-      } else if (feedback !== 'incorrect') {
-        handleContinue()
-      }
-
-      return
-    }
-
-    if (
-      feedback !== null ||
-      event.nativeEvent.isComposing ||
-      event.ctrlKey ||
-      event.altKey ||
-      event.metaKey ||
-      !/^[a-z]$/i.test(event.key)
-    ) {
-      return
-    }
-
-    const midi = mapLetterToMidi(event.key)
-
-    if (midi === null) {
-      return
-    }
+  function recordCharacterNote(letter: string): void {
+    const midi = mapLetterToMidi(letter)
+    if (midi === null) return
 
     void audio.unlock()
-    audio.playCharacter(event.key)
+    audio.playCharacter(letter)
 
     const elapsed = Math.max(0, Date.now() - sessionStartedAtRef.current)
-    const startMs =
-      lastNoteStartRef.current < 0
-        ? 0
-        : Math.max(lastNoteStartRef.current + 70, Math.min(elapsed, lastNoteStartRef.current + 420))
+    const startMs = lastNoteStartRef.current < 0
+      ? 0
+      : Math.max(lastNoteStartRef.current + 70, Math.min(elapsed, lastNoteStartRef.current + 420))
 
     noteEventsRef.current.push({
       id: createId(),
@@ -244,6 +217,41 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
       kind: 'character',
     })
     lastNoteStartRef.current = startMs
+  }
+
+  /**
+   * Consume actual accepted input mutations, not only hardware keydown.
+   * This also works with mobile software keyboards that emit no printable keydown.
+   */
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
+    const next = event.currentTarget.value.replace(/[^a-zA-Z]/g, '')
+    const native = event.nativeEvent as InputEvent
+
+    if (feedback === null && !native.isComposing &&
+        native.inputType !== 'insertFromPaste' && native.inputType !== 'insertFromDrop') {
+      const inserted = native.inputType === 'insertText' &&
+        typeof native.data === 'string' && /^[a-z]$/i.test(native.data)
+        ? native.data
+        : ''
+      const appended = next.startsWith(draft) ? next.slice(draft.length) : ''
+      const letters = inserted || appended
+
+      for (const letter of letters.slice(0, 10)) {
+        recordCharacterNote(letter)
+      }
+    }
+
+    setDraft(next)
+  }
+
+  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    if (event.key !== 'Enter' || event.nativeEvent.isComposing) return
+    event.preventDefault()
+    if (feedback === null) {
+      handleSubmit()
+    } else if (feedback !== 'incorrect') {
+      handleContinue()
+    }
   }
 
   function replayComposition(): void {
@@ -427,7 +435,7 @@ export function PracticeScreen({ repository, audio, audioAvailable }: PracticeSc
               autoCapitalize="none"
               spellCheck={false}
               placeholder="在这里输入英文…"
-              onChange={(event) => setDraft(event.target.value.replace(/[^a-zA-Z]/g, ''))}
+              onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
               onPaste={(event) => event.preventDefault()}
               onDrop={(event) => event.preventDefault()}

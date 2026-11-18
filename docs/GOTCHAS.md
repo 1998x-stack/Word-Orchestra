@@ -90,3 +90,10 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Evidence:** Phase 0 E2E in run 44235990440: Chromium and WebKit passed (6 tests); 3 Firefox tests failed before opening any page. Firefox log explicitly recommends setting HOME=/root.
 - **Fix:** Set HOME=/root only for the browser test command, retaining all three browser projects and all tests.
 - **Validation:** Fix committed; subsequent cross-browser run pending.
+
+### 2026-11-18 — Hardware keydown alone misses mobile input
+
+- **Problem:** A mobile software keyboard can update an input field without a printable keyboard keydown. A listener that only records keydown notes may silently generate an empty composition on mobile.
+- **Fix:** Record notes from accepted input changes, use inputType/data when available, ignore composing/clipboard/drop insertion, and retain Enter handling on the focused input.
+- **Regression tests:** Component unit test checks accepted mutation triggers note capture and typing outside the field does not; browser E2E requires replay to be available after word input.
+- **Validation:** NOT RUN on real mobile hardware; cross-browser CI pending.

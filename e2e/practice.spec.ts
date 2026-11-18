@@ -19,6 +19,7 @@ test('Copy session finishes, saves, and persists across a full browser reload', 
   }
 
   await expect(page.getByText('本次学习记录已保存在此设备')).toBeVisible()
+  await expect(page.getByRole('button', { name: /回放我的作品/ })).toBeEnabled()
   await page.getByRole('button', { name: '学习记录' }).click()
   await expect(page.getByText('最近的练习')).toBeVisible()
   await expect(page.getByText('拼写练习', { exact: true })).toBeVisible()

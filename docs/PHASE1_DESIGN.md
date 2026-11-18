@@ -95,6 +95,9 @@ Never delete and recreate the object store during an upgrade. Upgrades are trans
 
 ## 5. User interface and accessibility
 
+Character-to-note capture is driven by accepted input mutations, not solely printable keydown events, so mobile software keyboards can participate. IME composition, paste, and drop are excluded. Only the focused practice field is observed; no global keyboard listener is allowed.
+
+
 - The Studio shows straightforward counts, not gamified rewards.
 - Replay and delete buttons are labelled per session; replay is disabled when no audio engine or note data is available.
 - Import uses an accessible file input; export uses an actual browser download.
