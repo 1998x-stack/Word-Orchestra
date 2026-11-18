@@ -82,3 +82,11 @@ This is the operational handoff for future agents and contributors. Add a dated 
 - **Regression tests:** v1→v2 upgrade, duplicate-safe import, destructive delete, supported archive round-trip, invalid version/rawInput/out-of-range note rejection.
 - **Validation:** NOT RUN on Phase 1 branch until GitHub CI completes; do not claim deployment success from code inspection alone.
 - **Known limitation:** spelling edit distance is not a physical keystroke error metric, and starter vocabulary remains draft content.
+
+
+### 2026-11-18 — Firefox in Playwright Docker container requires HOME=/root
+
+- **Reproduction:** GitHub Actions browser job in mcr.microsoft.com/playwright:v1.56.1-noble launched Firefox with HOME=/github/home, but Firefox ran as root and refused to start.
+- **Evidence:** Phase 0 E2E in run 44235990440: Chromium and WebKit passed (6 tests); 3 Firefox tests failed before opening any page. Firefox log explicitly recommends setting HOME=/root.
+- **Fix:** Set HOME=/root only for the browser test command, retaining all three browser projects and all tests.
+- **Validation:** Fix committed; subsequent cross-browser run pending.
